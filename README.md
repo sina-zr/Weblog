@@ -49,7 +49,7 @@ Before running the project, ensure you have the following installed:
 ## ▶️ How to Run the Project
 
 1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/weblog-realtime-chat.git
-   cd weblog-realtime-chat
-   ```
+2. **Make sure .NET 8 SDK & SQL Server 2022 is installed**
+3. **Set your desired connection string to appsettings.json**
+4. **Run the project**
+
