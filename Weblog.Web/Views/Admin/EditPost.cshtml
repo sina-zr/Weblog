@@ -1,0 +1,57 @@
+@using Weblog.DataLayer.Entities
+@model Weblog.Web.DTOs.EditBlogDto
+
+
+@{
+    ViewData["Title"] = "Admin-EditPost";
+    List<Category> categories = ViewBag.Categories;
+}
+
+<section class="mt-5" style="margin-top: 150px !important;">
+    <div class="card p-4 mx-5 my-5">
+        <div class="card-header">
+            <h2>ویرایش پست @Model.BlogId</h2>
+        </div>
+        <div class="card-body" style="direction: rtl;">
+            <p class="card-text">you can have 0 to many pictures but title and description are mandatory</p>
+            <form asp-action="EditPost" method="post" enctype="multipart/form-data">
+                <input type="hidden" value="@Model.BlogId"/>
+                <div class="col-md-8 mb-3">
+                    <label asp-for="Title" class="form-label">Title</label>
+                    <input type="text" class="form-control" asp-for="Title" placeholder="">
+                </div>
+                <div class="col-md-10 mb-3">
+                    <label asp-for="Description" class="form-label">Description</label>
+                    <textarea class="form-control" asp-for="Description" rows="7"></textarea>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Category</label>
+                    <select class="form-select" asp-for="SubCategoryId">
+                        @foreach (var cat in categories.Where(c => c.ParentId == null))
+                        {
+                            <option disabled="" class="fw-bold text-primary">@cat.Title</option>
+
+                            var subCategories = categories.Where(c => c.ParentId == cat.CategoryId);
+
+                            if (subCategories.Any())
+                            {
+                                foreach (var sub in subCategories)
+                                {
+                                    <option value="@sub.CategoryId">@sub.Title</option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Images" class="form-label">Photos</label>
+                    <input class="form-control" type="file" asp-for="Images" multiple>
+                </div>
+                <hr class="hr mt-3"/>
+                <div class="mt-1">
+                    <button type="submit" class="btn btn-primary btn-large">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

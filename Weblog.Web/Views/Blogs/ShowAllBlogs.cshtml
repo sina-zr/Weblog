@@ -1,0 +1,222 @@
+﻿@using Weblog.DataLayer.Entities
+@model List<Blog>
+@{
+    ViewData["Title"] = "All Posts";
+    List<Category> categories = ViewBag.Categories;
+    List<int>? selectedFilterCategory = ViewBag.SelectedFilterCategory;
+}
+
+<!-- Blogs Loop -->
+<section class="courses-loop py-4 border-bottom">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="mb-3 mt-5">
+
+                <form asp-action="ShowAllBlogs" id="filterForm" method="get">
+                    <div class="input-group shadow">
+                        <input type="text" class="form-control" id="searchInput" name="filterTitle" placeholder="Search Something ..." value="@ViewBag.FilterTitle">
+                        <button class="btn btn-dark btn-lg" type="submit">Search</button>
+                        <!-- Dropdown container for suggestions -->
+                        <div id="searchSuggestions" class="list-group position-absolute w-100 mt-5" style="z-index: 1000; display: none;"></div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        <div class="row">
+            <!-- SideBar -->
+            <div class="col-md-3">
+                <div class="list-group small shadow mb-3">
+                    <div class="list-group-item text-bg-light fw-bolder">Course By Categories</div>
+
+                    <ul class="list-unstyled ms-4 mt-2">
+
+                        @foreach (var cat in categories.Where(c => c.ParentId == null))
+                        {
+                            <li>
+                                <label class="fw-bold">@cat.Title</label>
+                                @if (categories.Any(c => c.ParentId == cat.CategoryId))
+                                {
+                                    <ul class="list-unstyled ms-3">
+                                        @foreach (var sub in categories.Where(c => c.ParentId == cat.CategoryId))
+                                        {
+                                            <li>
+                                                <input type="checkbox" name="filterCategory" form="filterForm" value="@sub.CategoryId"
+                                                       @(selectedFilterCategory != null && selectedFilterCategory.Contains(sub.CategoryId) ? "checked" : "")>
+                                                <label>@sub.Title</label>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </li>
+                        }
+                    </ul>
+
+                </div>
+                <div class="list-group small shadow mt-3">
+                    <div class="list-group-item text-bg-light fw-bolder">Latest News</div>
+                    <a href="#" class="py-3 list-group-item list-group-item-action text-truncate text-secondary">
+                        Games Help University Students Boost Grades
+                    </a>
+                    <a href="#" class="py-3 list-group-item list-group-item-action text-truncate text-secondary">
+                        New Scores Are Published
+                    </a>
+                    <a href="#" class="py-3 list-group-item list-group-item-action text-truncate text-secondary">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, amet?
+                    </a>
+                    <a href="#" class="py-3 list-group-item list-group-item-action text-truncate text-secondary">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, amet?
+                    </a>
+                    <a href="#" class="py-3 list-group-item list-group-item-action text-truncate text-secondary">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, amet?
+                    </a>
+                    <a href="#" class="py-3 list-group-item list-group-item-action text-truncate text-secondary">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, amet?
+                    </a>
+                    <a href="#" class="py-3 list-group-item list-group-item-action text-truncate text-secondary">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, amet?
+                    </a>
+                    <a href="#" class="py-3 list-group-item list-group-item-action text-truncate text-secondary">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, amet?
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <div class="list-group small">
+                    <div class="list-group-item pb-4 text-bg-light fw-bold justify-content-between align-items-center">
+                        @if (Model.Any())
+                        {
+                            foreach (var blog in Model)
+                            {
+                                <a asp-action="ShowBlogDetails" asp-route-id="@blog.BlogId" class="list-group-item list-group-item-action mt-3 rounded border shadow-sm ">
+                                    <div class="row align-items-center g-3" style="direction: rtl;">
+                                        <div class="col-md-4">
+                                            <div class="course-image-holder">
+                                                @if (@blog.BlogImages.FirstOrDefault() != null)
+                                                {
+                                                    <img src="/BlogsImages/@blog.BlogImages.FirstOrDefault().ImageName"
+                                                         class="img-fluid rounded" alt="No Photo"/>
+                                                }
+                                                else
+                                                {
+                                                    <img src="/BlogsImages/NoPhoto.jpg"
+                                                         class="img-fluid rounded" alt="No Photo"/>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <h5>@blog.Title</h5>
+
+                                            @if (blog.Description.Length > 200)
+                                            {
+                                                <p class="text-secondary">
+                                                    @blog.Description.Substring(0, 200)...
+                                                </p>
+                                            }
+                                            else
+                                            {
+                                                <p class="text-secondary">
+                                                    @blog.Description
+                                                </p>
+                                            }
+
+
+                                            <p class="d-inline-flex align-content-center">
+                                                <span class="ms-3 rounded-pill bg-info text-light small px-3 py-1">
+                                                    <i class='bx bx-calendar mx-1'></i>
+                                                    @blog.CreateDate.ToLongDateString()
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            <p class="mt-4 text-center text-warning">
+                                No data found
+                            </p>
+                        }
+
+                    </div>
+                </div>
+
+                <nav aria-label="..." class="mt-5 justify-content-center d-flex">
+                    <ul class="pagination">
+                        @{
+                            int pagesCount = ViewBag.PagesCount;
+                            int currentPage = ViewBag.CurrentPage;
+                        }
+                        @for (int i = 1; i <= pagesCount; i++)
+                        {
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link" asp-action="ShowAllBlogs" asp-route-pageId="@i">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+                
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /Blogs -->
+
+@section Scripts
+{
+<script>
+    $(document).ready(function () {
+        const $searchInput = $('#searchInput');
+        const $suggestions = $('#searchSuggestions');
+
+        // Handle input changes
+        $searchInput.on('input', function () {
+            const query = $(this).val();
+
+            if (query.length === 0) {
+                $suggestions.empty().hide(); // Clear and hide if no input
+                return;
+            }
+
+            // Call the API
+            $.ajax({
+                url: `https://localhost:7273/Blogs/SearchInBlogs`, // Your API endpoint
+                method: 'GET',
+                data: { text: query },
+                success: function (response) {
+                    if (response.value && response.value.length > 0) {
+                        // Populate suggestions
+                        $suggestions.empty().show();
+                        response.value.forEach((item) => {
+                            $suggestions.append(`
+                            <button type="button" style="background-color: #dcf1f5;" class="list-group-item list-group-item-action btn-info">${item}</button>
+                        `);
+                        });
+                    } else {
+                        $suggestions.empty().hide(); // Hide if no results
+                    }
+                },
+                error: function () {
+                    $suggestions.empty().hide(); // Hide on error
+                }
+            });
+        });
+
+        // Handle suggestion click
+        $suggestions.on('click', '.list-group-item', function () {
+            const selectedText = $(this).text();
+            $searchInput.val(selectedText); // Set input value
+            $suggestions.empty().hide(); // Clear suggestions
+        });
+
+        // Hide suggestions if clicked outside
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('.input-group').length) {
+                $suggestions.empty().hide();
+            }
+        });
+    });
+</script>
+}

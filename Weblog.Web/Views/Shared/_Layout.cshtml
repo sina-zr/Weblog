@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Weblog</title>
+    <link rel="icon" href="/icons8-article-96.png" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Weblog.Web.styles.css" asp-append-version="true" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.3/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.15.3/dist/sweetalert2.min.css">
+    @await RenderSectionAsync("Heads", required: false)
+</head>
+<body class="m-0">
+    <header>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 fixed-top">
+            <div class="container">
+                <a href="/" class="navbar-brand">
+                    <img class="img-fluid mx-1" src="/icons8-article-96.png" style="width: 50px; height: auto;" />
+                    Weblog
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navmenu">
+                    <ul class="navbar-nav ms-auto d-flex align-items-center">
+                        @if (User.Identity.IsAuthenticated && User.Identity.Name.ToLower() == "admin")
+                        {
+                            <li class="nav-item">
+                                <a href="/Admin/ShowPanel" class="nav-link">AdminPanel</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a href="/Blogs/ShowAllBlogs" class="nav-link">Posts</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Chat" class="nav-link">Chat</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/AboutUs" class="nav-link">AboutUs</a>
+                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item mt-1">
+                                <a href="/Logout" class="text-white-50 fs-4">
+                                    <i class='bx bx-log-out'></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a href="/Login" class="nav-link btn btn-sm btn-sucess">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/Register" class="nav-link btn btn-sm btn-sucess">Register</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-5 bg-dark text-white text-center position-relative">
+        <div class="container">
+            <p class="lead mb-0">Copyright &copy; 2021 Frontend Bootcamp</p>
+
+            <a href="#" class="position-absolute bottom-0 end-0 p-5">
+                <i class="bi bi-arrow-up-circle h1"></i>
+            </a>
+        </div>
+    </footer>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2" />
+                </svg>
+                <strong class="me-auto ms-2">Message</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toast-body">
+                
+            </div>
+        </div>
+    </div>
+    
+    @if (TempData["Message"] != null)
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var toastElement = document.getElementById('liveToast');
+                let toastBody = document.getElementById('toast-body');
+                toastBody.innerHTML = @TempData["Message"];
+                var toast = new bootstrap.Toast(toastElement);
+                toast.show();
+            });
+        </script>
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

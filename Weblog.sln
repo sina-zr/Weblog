@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34408.163
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weblog.Web", "Weblog.Web\Weblog.Web.csproj", "{13BAD065-085D-4266-9DC1-B70AC16B2CBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Weblog.DataLayer", "Weblog.DataLayer\Weblog.DataLayer.csproj", "{0B430579-7DBA-476E-B7F6-C28BE3CEC8C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{13BAD065-085D-4266-9DC1-B70AC16B2CBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13BAD065-085D-4266-9DC1-B70AC16B2CBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13BAD065-085D-4266-9DC1-B70AC16B2CBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13BAD065-085D-4266-9DC1-B70AC16B2CBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B430579-7DBA-476E-B7F6-C28BE3CEC8C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B430579-7DBA-476E-B7F6-C28BE3CEC8C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B430579-7DBA-476E-B7F6-C28BE3CEC8C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B430579-7DBA-476E-B7F6-C28BE3CEC8C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DF5E1F87-EC87-4B3B-B19E-2533D5146AD0}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,167 @@
+﻿@{
+    ViewData["Title"] = "Register";
+    string message = ViewData["Message"] as string;
+    // Layout = null;
+}
+
+@section Heads {
+      <style>
+    .form-switch .form-check-input:checked~.switch-label {
+      color: #0d6efd;
+    }
+
+    .form-switch .form-check-input:not(:checked)~.switch-label {
+      color: #ff69b4;
+    }
+  </style>
+}
+
+<section class="vh-100">
+    <div class="container py-5 h-100">
+        <div class="row d-flex align-items-center justify-content-center h-100">
+            <div class="col-md-8 col-lg-7 col-xl-6">
+                <img src="/Assets/Images/pablita-964.png"
+                     class="img-fluid" style="width: 500px;height: auto;">
+            </div>
+            <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1 mx-3 mt-5">
+                <form asp-action="Register" method="post" id="registerForm">
+                    <!-- Username input -->
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <input type="text" name="Username" id="Username" class="form-control form-control-lg" />
+                        <label class="form-label" for="Username">UserName</label>
+                        <small id="usernameError" class="text-danger" style="display: none;">At least 4 letters</small>
+                    </div>
+
+                    <!-- Password input -->
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <input type="password" name="Password" id="Password" class="form-control form-control-lg" />
+                        <label class="form-label" for="Password">Password</label>
+                    </div>
+
+                    <!-- Password repeat -->
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <input type="password" id="RePassword" class="form-control form-control-lg" />
+                        <label class="form-label">RePassword</label>
+                        <small id="passwordError" class="text-danger" style="display: none;">Password & reapeat not equal</small>
+                    </div>
+
+                    <!-- Email input -->
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <input type="email" id="Email" name="Email" class="form-control form-control-lg" />
+                        <label class="form-label" for="Email">Email</label>
+                        <small id="emailError" class="text-danger" style="display: none;">@("Must include @")</small>
+                    </div>
+
+                    <div class="d-flex justify-content-around align-items-center mb-4">
+                        <!-- Checkbox -->
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="genderSwitch" checked>
+                            <label class="form-check-label switch-label" for="genderSwitch" id="genderLabel">Male</label>
+                        </div>
+                        <input type="hidden" name="IsMale" id="isMaleInput" value="true">
+
+                        <a href="/">Back home</a>
+                    </div>
+
+                    <!-- buttons -->
+                    <div class="align-items-center justify-content-center d-flex">
+                        <button type="submit" id="submitButton" class="btn btn-primary btn-lg btn-block mx-1" disabled>Submit</button>
+                        <a href="/Login" class="btn btn-outline-primary btn-lg btn-block mx-1">Login Page </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            const genderSwitch = $('#genderSwitch');
+            const genderLabel = $('#genderLabel');
+            const isMaleInput = $('#isMaleInput');
+
+            function updateSwitch() {
+                if (genderSwitch.is(':checked')) {
+                    genderLabel.text('Male');
+                    genderLabel.css('color', '#0d6efd');
+                    isMaleInput.val('true');
+                } else {
+                    genderLabel.text('Female');
+                    genderLabel.css('color', '#ff69b4');
+                    isMaleInput.val('false');
+                }
+            }
+
+            // Initialize the switch state
+            updateSwitch();
+
+            // Add event listener to update on change
+            genderSwitch.on('change', updateSwitch);
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Validation functions
+            function validateUsername() {
+                const username = $('#Username').val().trim();
+                if (username.length >= 4) {
+                    $('#usernameError').hide();
+                    return true;
+                } else {
+                    $('#usernameError').show();
+                    return false;
+                }
+            }
+
+            function validateEmail() {
+                const email = $('#Email').val().trim();
+                if (email.includes('@@')) {
+                    $('#emailError').hide();
+                    return true;
+                } else {
+                    $('#emailError').show();
+                    return false;
+                }
+            }
+
+            function validatePasswords() {
+                const password = $('#Password').val();
+                const rePassword = $('#RePassword').val();
+                if (password === rePassword && password.length > 0) {
+                    $('#passwordError').hide();
+                    return true;
+                } else {
+                    $('#passwordError').show();
+                    return false;
+                }
+            }
+
+            // Enable/Disable Submit Button
+            function toggleSubmitButton() {
+                if (validateUsername() && validateEmail() && validatePasswords()) {
+                    $('#submitButton').prop('disabled', false);
+                } else {
+                    $('#submitButton').prop('disabled', true);
+                }
+            }
+
+            // Event listeners for inputs
+            $('#Username').on('input', function () {
+                validateUsername();
+                toggleSubmitButton();
+            });
+
+            $('#Email').on('input', function () {
+                validateEmail();
+                toggleSubmitButton();
+            });
+
+            $('#Password, #RePassword').on('input', function () {
+                validatePasswords();
+                toggleSubmitButton();
+            });
+        });
+    </script>
+}

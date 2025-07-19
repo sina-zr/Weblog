@@ -1,0 +1,420 @@
+@using System.Security.Claims
+@using Weblog.Web.Helper
+@model List<Weblog.DataLayer.Entities.ChatGroup>
+
+@{
+    ViewData["Title"] = "Chat";
+    Weblog.DataLayer.Entities.User user = ViewBag.User;
+}
+
+@section Heads
+{
+    <style>
+        #chat3 .form-control {
+            border-color: transparent;
+        }
+
+        #chat3 .form-control:focus {
+            border-color: transparent;
+            box-shadow: inset 0px 0px 0px 1px transparent;
+        }
+
+        .badge-dot {
+            border-radius: 50%;
+            height: 10px;
+            width: 10px;
+            margin-left: 2.9rem;
+            margin-top: -.75rem;
+        }
+        
+        .selected-group {
+            border: 2px solid gray;
+            border-radius: 12px;
+        }
+    </style>
+    <link rel="stylesheet" href="/lib/perfect-scrollbar/perfect-scrollbar.css"/>
+    <script src="/lib/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/all.min.js"></script>
+}
+
+<section style="background-color: #CDC4F9;" class="mt-5">
+    <div class="container py-5">
+
+        <div class="row py-5">
+            <div class="col-md-12">
+
+                <div class="card" id="chat3" style="border-radius: 15px;">
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0 border-end">
+
+                                @if (User.IsAdmin())
+                                {
+                                    
+                                    <div class="p-3">
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                                                data-bs-target="#createGroupModal">
+                                            +
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="createGroupModal" data-bs-backdrop="static"
+                                             data-bs-keyboard="false" tabindex="-1" aria-labelledby="createGroupModal"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="createGroupLabel">Modal title</h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="createGroupForm" method="post"
+                                                              enctype="multipart/form-data">
+                                                            <div class="mb-3">
+                                                                <label for="groupNameInput" class="form-label">Group
+                                                                    Name</label>
+                                                                <input type="text" class="form-control" id="groupNameInput"
+                                                                       placeholder="Enter Group Name ..."/>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="groupImageInput" class="form-label">Group
+                                                                    Name</label>
+                                                                <input type="file" class="form-control" id="groupImageInput"
+                                                                       accept="image/*"/>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Dismiss
+                                                        </button>
+                                                        <button type="submit" form="createGroupForm"
+                                                                onclick="createGroup(event)" class="btn btn-primary"
+                                                                data-bs-dismiss="modal">Save
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                    
+                                <hr class="m-0"/>
+                                <div class="p-3">
+
+                                    @* <div class="input-group rounded mb-3"> *@
+                                    @*     <input type="search" class="form-control rounded border-secondary" *@
+                                    @*            placeholder="Search" aria-label="Search" *@
+                                    @*            aria-describedby="search-addon"/> *@
+                                    @*     <button class="input-group-text border-0 btn btn-secondary" id="search-addon"> *@
+                                    @*         <i class="fas fa-search"></i> *@
+                                    @*     </button> *@
+                                    @* </div> *@
+
+                                    <div id="groups-container" data-mdb-perfect-scrollbar-init
+                                         style="position: relative; height: 400px">
+                                        <ul class="list-unstyled mb-0">
+                                            @foreach (var group in Model)
+                                            {
+                                                <li class="border-bottom" data-groupId="@group.GroupId" onclick="selectGroup('@group.GroupId')">
+                                                    <a class="btn d-flex justify-content-between">
+                                                        <div class="d-flex flex-row">
+                                                            <div>
+                                                                <img
+                                                                    src="/GroupImages/@group.GroupImageName"
+                                                                    alt="avatar" class="d-flex align-self-center me-3"
+                                                                    width="60">
+                                                                <span class="badge bg-success badge-dot"></span>
+                                                            </div>
+                                                            <div class="pt-1">
+                                                                <p class="fw-bold mb-0">@group.GroupName</p>
+                                                                <p class="small text-muted">Hello, Are you there?</p>
+                                                            </div>
+                                                        </div>
+                                                        <div class="pt-1">
+                                                            <p class="small text-muted mb-1">Just now</p>
+                                                            <span
+                                                                class="badge bg-danger rounded-pill float-end">3</span>
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6 col-lg-7 col-xl-8">
+
+                                <div id="messages-container" class="pt-3 pe-3" data-mdb-perfect-scrollbar-init
+                                     style="position: relative; height: 500px">
+
+                                    <div class="d-flex flex-row justify-content-start">
+                                        <img src="/Avatars/300-5.jpg" class="rounded-circle"
+                                             alt="avatar 1" style="width: 45px; height: 100%;">
+                                        <div>
+                                            <p class="small p-2 ms-3 mb-1 rounded-3 bg-secondary text-white">Please
+                                                watch your language here!!!</p>
+                                            <p class="small ms-3 mb-3 rounded-3 text-muted float-end">global</p>
+                                        </div>
+                                    </div>
+
+                                    @*
+                                    @foreach (var ms in Model)
+                                    {
+                                        @if (ms.UserId == userId)
+                                        {
+                                            <div class="d-flex flex-row justify-content-end">
+                                                <div>
+                                                    <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">@ms.Text</p>
+                                                    <p class="small me-3 mb-3 rounded-3 text-muted">@ms.SendDateTime.ToShortTimeString() | @ms.SendDateTime.ToShamsi()</p>
+                                                </div>
+                                                <img src="/Avatars/@user.AvatarName" class="rounded-circle"
+                                                     alt="avatar 1" style="width: 45px; height: 100%;">
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="d-flex flex-row justify-content-start">
+                                                <img src="/Avatars/@ms.User.AvatarName" class="rounded-circle"
+                                                     alt="avatar 1" style="width: 45px; height: 100%;">
+                                                <div>
+                                                    <p class="small p-2 ms-3 mb-1 rounded-3 bg-body-tertiary">@ms.Text</p>
+                                                    <p class="small ms-3 mb-3 rounded-3 text-muted float-end">@ms.SendDateTime.ToShortTimeString() | @ms.SendDateTime.ToShamsi()</p>
+                                                </div>
+                                            </div>
+                                        }
+                                    }*@
+                                </div>
+
+                                <div
+                                    class="text-muted d-flex justify-content-start align-items-center mt-2 border rounded-pill p-2">
+                                    <img src="/Avatars/@user.AvatarName" class="rounded-circle"
+                                         alt="avatar 3" style="width: 55px; height: 100%;">
+                                    <input type="text" class="form-control form-control-lg" id="messageInput"
+                                           placeholder="Type message">
+                                    <a class="ms-1 text-muted" href="#!">
+                                        <i class="fas fa-paperclip"></i>
+                                    </a>
+                                    <a class="ms-3 text-muted" href="#!">
+                                        <i class="fas fa-smile"></i>
+                                    </a>
+                                    <a class="ms-3 btn" onclick="SendMessage()">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts
+{
+    <script>
+        const ps1 = new PerfectScrollbar('#groups-container');
+        const ps2 = new PerfectScrollbar('#messages-container');
+    </script>
+
+    <script src="/lib/signalR/signalr.min.js"></script>
+    <script>
+        var userId = @user.UserId;
+        var connection = new signalR.HubConnectionBuilder().withUrl("/chat-hub").build();
+
+        connection.on("ReceiveMessage", ReceiveMessage);
+        connection.start();
+
+        function ReceiveMessage(message) {
+            if (message.userId && message.text) {
+                var messageHolder = document.getElementById('messages-container');
+                var messageHtml;
+
+                if (userId == message.userId) {
+                    messageHtml = `
+                        <div class="d-flex flex-row justify-content-end">
+                            <div>
+                                <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${message.text}</p>
+                                <p class="small me-3 mb-3 rounded-3 text-muted">${formatDate(message.time)}</p>
+                            </div>
+                            <img src="/Avatars/${message.avatar}" class="rounded-circle"
+                                 alt="avatar 1" style="width: 45px; height: 100%;">
+                        </div>
+                    `;
+                } else {
+                    messageHtml = `
+                        <div class="d-flex flex-row justify-content-start ms-2">
+                            <img src="/Avatars/${message.avatar}"
+                                 alt="avatar 1" class="rounded-circle" style="width: 45px; height: 100%;">
+                            <div>
+                                <p class="small p-2 ms-3 mb-1 rounded-3 bg-light">${message.text}</p>
+                                <small class="small ms-3 mb-3 rounded-3 text-muted float-start">${formatDate(message.time)}</small>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            // Append the message to the container
+            messageHolder.innerHTML += messageHtml;
+
+            // Scroll to the bottom of the messages container
+            messageHolder.scrollTop = messageHolder.scrollHeight;
+        }
+
+        function SendMessage() {
+            let text = $("#messageInput").val();
+            let selected_groupId = document.querySelector('#groups-container>ul li.selected-group').getAttribute('data-groupId');
+            connection.invoke("SendMessage", Number(selected_groupId), text);
+            $("#messageInput").val("");
+        }
+
+        let currentPage = 1; // Track the current page of messages
+        let isLoading = false; // Prevent multiple simultaneous requests
+
+        async function getMessages(groupId, pageId = 1, pageSize = 10) {
+            const url = `/GetGroupMessages/${groupId}?pageId=${pageId}&pageSize=${pageSize}`;
+            const chatsContainer = document.getElementById('messages-container');
+
+            try {
+                // Show loading indicator (optional)
+                if (pageId > 1) {
+                    const loadingDiv = document.createElement('div');
+                    loadingDiv.className = 'text-center my-2';
+                    loadingDiv.innerHTML = 'Loading more messages...';
+                    chatsContainer.prepend(loadingDiv);
+                }
+
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`);
+                }
+
+                const messages = await response.json();
+
+                // Remove loading indicator (if any)
+                if (pageId > 1) {
+                    const loadingDiv = chatsContainer.querySelector('.text-center');
+                    if (loadingDiv) {
+                        loadingDiv.remove();
+                    }
+                }
+
+                // If no more messages, stop loading
+                if (messages.length === 0) {
+                    return;
+                }
+
+                // Append or prepend messages based on the page
+                messages.forEach(ms => {
+                    const messageElement = document.createElement('div');
+                    messageElement.classList.add('d-flex', 'flex-row');
+
+                    if (ms.userId == userId) {
+                        // Message from the current user
+                        messageElement.classList.add('justify-content-end');
+                        messageElement.innerHTML = `
+                    <div>
+                        <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">${ms.text}</p>
+                        <small class="small me-3 mb-3 rounded-3 text-muted float-end">${formatDate(ms.time)}</small>
+                    </div>
+                    <img src="/Avatars/${ms.avatar}" class="rounded-circle" alt="avatar 1" style="width: 45px; height: 100%;">
+                `;
+                    } else {
+                        // Message from another user
+                        messageElement.classList.add('justify-content-start', 'ms-2');
+                        messageElement.innerHTML = `
+                    <img src="/Avatars/${ms.avatar}" class="rounded-circle" alt="avatar 1" style="width: 45px; height: 100%;">
+                    <div>
+                        <p class="small p-2 ms-3 mb-1 rounded-3 bg-light">${ms.text}</p>
+                        <small class="small ms-3 mb-3 rounded-3 text-muted float-start">${formatDate(ms.time)}</small>
+                    </div>
+                `;
+                    }
+
+                    // Prepend messages for infinite scroll (new messages are added at the top)
+                    if (pageId > 1) {
+                        chatsContainer.prepend(messageElement);
+                    } else {
+                        chatsContainer.appendChild(messageElement);
+                    }
+                });
+
+                // Update the current page
+                currentPage = pageId;
+
+            } catch (error) {
+                console.error(error.message);
+            } finally {
+                isLoading = false; // Reset loading state
+            }
+        }
+
+        // Function to handle scroll events
+        function handleScroll() {
+            const chatsContainer = document.getElementById('messages-container');
+
+            // Check if the user has scrolled to the top of the container
+            if (chatsContainer.scrollTop === 0 && !isLoading) {
+                isLoading = true; // Prevent multiple requests
+                currentPage++; // Load the next page
+                let selected_groupId = document.querySelector('#groups-container>ul li.selected-group').getAttribute('data-groupId');
+                getMessages(selected_groupId, currentPage); // Fetch the next set of messages
+            }
+        }
+
+        // Attach the scroll event listener to the messages container
+        const chatsContainer = document.getElementById('messages-container');
+        if (chatsContainer) {
+            chatsContainer.addEventListener('scroll', handleScroll);
+        }
+
+        function selectGroup(groupId) {
+            const groupItems = document.querySelectorAll('#groups-container>ul li'); // Get all <li> elements
+            const messagesContainer = document.getElementById('messages-container');
+
+            // Remove .selected-group class from all <li> elements
+            groupItems.forEach(li => {
+                li.classList.remove('selected-group');
+            });
+
+            // Add .selected-group class to the clicked <li>
+            event.currentTarget.classList.add('selected-group');
+
+            // Reset currentPage to 1
+            currentPage = 1;
+
+            // Clear the messages container
+            messagesContainer.innerHTML = '';
+
+            // Call getMessages with the selected groupId
+            getMessages(groupId);
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+
+            // Extract the year, month, day, hours, and minutes
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+
+            // Format the date and time
+            return `${year}/${month}/${day} ${hours}:${minutes}`;
+        }
+    </script>
+}
