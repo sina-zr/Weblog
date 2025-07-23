@@ -55,6 +55,18 @@ namespace Weblog.Web.Controllers
             _context.Users.Add(newUser);
             _context.SaveChanges();
 
+            var chatGroups = _context.ChatGroups.ToList();
+            List<UserGroup> userGroups = chatGroups.Select(g => new UserGroup()
+            {
+                UserId = newUser.UserId,
+                GroupId = g.GroupId
+            }).ToList();
+            if (userGroups.Any())
+            {
+                _context.AddRange(userGroups);
+                _context.SaveChanges();
+            }
+
             TempData["Message"] = "ثبت نام با موفقیت انجام شد.";
             return RedirectToAction(nameof(Login));
         }
