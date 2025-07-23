@@ -68,7 +68,7 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h1 class="modal-title fs-5" id="createGroupLabel">Modal title</h1>
+                                                        <h1 class="modal-title fs-5" id="createGroupLabel">ایجاد گروه</h1>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
                                                     </div>
@@ -76,14 +76,12 @@
                                                         <form id="createGroupForm" method="post"
                                                               enctype="multipart/form-data">
                                                             <div class="mb-3">
-                                                                <label for="groupNameInput" class="form-label">Group
-                                                                    Name</label>
+                                                                <label for="groupNameInput" class="form-label">نام گروه</label>
                                                                 <input type="text" class="form-control" id="groupNameInput"
                                                                        placeholder="Enter Group Name ..."/>
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="groupImageInput" class="form-label">Group
-                                                                    Name</label>
+                                                                <label for="groupImageInput" class="form-label">عکس گروه</label>
                                                                 <input type="file" class="form-control" id="groupImageInput"
                                                                        accept="image/*"/>
                                                             </div>
@@ -91,11 +89,11 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Dismiss
+                                                                data-bs-dismiss="modal">لغو
                                                         </button>
                                                         <button type="submit" form="createGroupForm"
                                                                 onclick="createGroup(event)" class="btn btn-primary"
-                                                                data-bs-dismiss="modal">Save
+                                                                data-bs-dismiss="modal">ذخیره
                                                         </button>
                                                     </div>
                                                 </div>
@@ -133,11 +131,11 @@
                                                             </div>
                                                             <div class="pt-1">
                                                                 <p class="fw-bold mb-0">@group.GroupName</p>
-                                                                <p class="small text-muted">Hello, Are you there?</p>
+                                                                <p class="small text-muted">آخرین پیام گروه</p>
                                                             </div>
                                                         </div>
                                                         <div class="pt-1">
-                                                            <p class="small text-muted mb-1">Just now</p>
+                                                            <p class="small text-muted mb-1">همین الان</p>
                                                             <span
                                                                 class="badge bg-danger rounded-pill float-end">3</span>
                                                         </div>
@@ -160,9 +158,8 @@
                                         <img src="/Avatars/300-5.jpg" class="rounded-circle"
                                              alt="avatar 1" style="width: 45px; height: 100%;">
                                         <div>
-                                            <p class="small p-2 ms-3 mb-1 rounded-3 bg-secondary text-white">Please
-                                                watch your language here!!!</p>
-                                            <p class="small ms-3 mb-3 rounded-3 text-muted float-end">global</p>
+                                            <p class="small p-2 ms-3 mb-1 rounded-3 bg-secondary text-white">لطفا در هنگام چت ادب را رعایت و از بحث های غیر مرتبط خودداری کنید!!!</p>
+                                            <p class="small ms-3 mb-3 rounded-3 text-muted float-end">همگانی</p>
                                         </div>
                                     </div>
 
@@ -199,7 +196,7 @@
                                     <img src="/Avatars/@user.AvatarName" class="rounded-circle"
                                          alt="avatar 3" style="width: 55px; height: 100%;">
                                     <input type="text" class="form-control form-control-lg" id="messageInput"
-                                           placeholder="Type message">
+                                           placeholder="پیامی بنویسید">
                                     <a class="ms-1 text-muted" href="#!">
                                         <i class="fas fa-paperclip"></i>
                                     </a>
